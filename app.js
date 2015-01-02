@@ -7,7 +7,7 @@ var hook = require('./github-webhook.js')({
 
 // listen to push on github on branch master
 hook.on('push:roomhunter-homepage', function (data) {
-    execFile('./deploy-homepage.sh', function(error, stdout, stderr) {
+    require('child_process').execFile('./deploy-homepage.sh', function(error, stdout, stderr) {
         console.log('stdout: ' + stdout);
         console.error('stderr: ' + stderr);
         if (error !== null) {
