@@ -1,0 +1,30 @@
+{
+  "name": "roomhunter-webhook",
+  "description": "",
+  "version": "1.0",
+  "homepage": "https://github.com/roomhunter/roomhunter-webhook",
+  "author": {
+    "name": "to0",
+    "email": "caiyuannan@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/roomhunter/roomhunter-webhook.git"
+  },
+  "bugs": {
+    "url": "https://github.com/roomhunter/roomhunter-webhook/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/roomhunter/roomhunter-webhook/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "app",
+  "engines": {
+    "node": ">0.6.12"
+  },
+  "dependencies": {
+  },
+  "keywords": [ "github", "payload", "git hook", "post-receive" ]
+}
