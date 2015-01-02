@@ -7,7 +7,21 @@ var hook = require('./github-webhook.js')({
 
 // listen to push on github on branch master
 hook.on('push:roomhunter-homepage', function (data) {
-    console.log(data);
+    execFile('./deploy-homepage.sh', function(error, stdout, stderr) {
+        console.log('stdout: ' + stdout);
+        console.error('stderr: ' + stderr);
+        if (error !== null) {
+            console.error('exec error: ' + error);
+        }
+    });
+});
+
+hook.on('push:roomhunter-webapp', function (data) {
+
+});
+
+hook.on('push:server', function (data) {
+
 });
 
 hook.listen();
