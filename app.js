@@ -1,12 +1,13 @@
-var githubHandler = require('github-webhook.js')({
+var hook = require('./github-webhook.js')({
     port: 3333,
-    path: '/github'
+    path: '/github',
+    logger: { log: console.log, error: function () {} }
 });
 
 
 // listen to push on github on branch master
-github.on('push:roomhunter-homepage', function (data) {
+hook.on('push:roomhunter-homepage', function (data) {
     console.log(data);
 });
 
-github.listen();
+hook.listen();
