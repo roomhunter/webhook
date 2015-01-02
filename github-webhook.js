@@ -108,6 +108,9 @@ function serverHandler(req, res) {
             return reply(400, res);
         }
         if (!data.ref || data.ref !== 'refs/heads/master') {
+            if (req.headers['X-GitHub-Event'] === 'ping') {
+                return reply(200, res);
+            }
             self.logger.error(Util.format('non master branch from %s, returning 400', remoteAddress));
             return reply(400, res);
         }
