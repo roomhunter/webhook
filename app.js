@@ -1,7 +1,7 @@
 var hook = require('./github-webhook.js')({
     port: 3333,
     path: '/github',
-    logger: { log: console.log, error: console.log }
+    logger: { log: console.log, error: console.error }
 });
 
 
