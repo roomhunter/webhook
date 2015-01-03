@@ -1,3 +1,4 @@
+var child_process = require('child_process');
 var hook = require('./github-webhook.js')({
     port: 3333,
     path: '/github',
@@ -6,21 +7,24 @@ var hook = require('./github-webhook.js')({
 
 
 // listen to push on github on branch master
-hook.on('push:roomhunter-homepage', function (data) {
-    require('child_process').execFile('./deploy-homepage.sh', function(error, stdout, stderr) {
-        console.log('stdout: ' + stdout);
-        console.error('stderr: ' + stderr);
-        if (error !== null) {
-            console.error('exec error: ' + error);
+hook.on('push:roomhunter-homepage', function (payload) {
+    child_process.execFile('./deploy-homepage.sh', function(err, stdout, stderr) {
+        if (err) {
+            if (err.code === 'EACCES') {//permission
+                child_process.exec('chmod +x deploy-homepage.sh');
+                child_process.execFile('./deploy-homepage.sh');
+            }
+            console.log(err);
         }
+        console.log(stdout);
     });
 });
 
-hook.on('push:roomhunter-webapp', function (data) {
+hook.on('push:roomhunter-webapp', function (payload) {
 
 });
 
-hook.on('push:server', function (data) {
+hook.on('push:server', function (payload) {
 
 });
 
