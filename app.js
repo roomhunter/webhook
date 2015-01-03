@@ -28,4 +28,18 @@ hook.on('push:server', function (payload) {
 
 });
 
+hook.on('push:nginx-config', function (payload) {
+    child_process.execFile('./update-nginx.sh', function(err, stdout, stderr) {
+        if (err) {
+            if (err.code === 'EACCES') {//permission
+                child_process.exec('chmod +x update-nginx.sh');
+                child_process.execFile('./update-nginx.sh');
+            }
+            console.log(err);
+        }
+        console.log(stdout);
+    });
+});
+
+
 hook.listen();
