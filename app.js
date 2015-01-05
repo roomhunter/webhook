@@ -21,7 +21,12 @@ hook.on('push:roomhunter-webapp', function (payload) {
 });
 
 hook.on('push:server', function (payload) {
-
+  child_process.execFile('./deploy-server.sh', function(err, stdout, stderr) {
+    if (err) {
+      console.log(err);
+    }
+    console.log(stdout);
+  });
 });
 
 hook.on('push:nginx-config', function (payload) {
