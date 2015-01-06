@@ -7,6 +7,16 @@ var hook = require('./github-webhook.js')({
 });
 
 // listen to push on github on branch master
+
+hook.on('push:webhook', function (payload) {
+    child_process.execFile('./services/reload-self.sh', function(err, stdout, stderr) {
+        if (err) {
+            console.log(err);
+        }
+        console.log(stdout);
+    });
+});
+
 hook.on('push:web-homepage', function (payload) {
     child_process.execFile('./services/deploy-homepage.sh', function(err, stdout, stderr) {
         if (err) {
