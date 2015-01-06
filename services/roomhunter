@@ -1,0 +1,20 @@
+
+case "$1" in
+    start)
+        forever stopall
+        cd /srv
+        rm -rf webhook
+        rm -rf server
+        git clone https://github.com/roomhunter/webhook.git
+        cd webhook
+        ./start.sh
+        ./services/deploy-server.sh
+        ./services/deploy-homepage.sh
+        ./services/update-nginx.sh
+        ;;                         
+    stop)
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop}"
+        exit 2
+ esac
