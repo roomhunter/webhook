@@ -8,4 +8,4 @@ if [ ! -d /srv/logs/webhook ]; then
     touch /srv/logs/webhook/err.log
 fi
 
-forever start -a -w -o --uid "webhook" /srv/logs/webhook/out.log -e /srv/logs/webhook/err.log hook.js
+forever start -a -w --uid "webhook" -o /srv/logs/webhook/out.log -e /srv/logs/webhook/err.log hook.js
