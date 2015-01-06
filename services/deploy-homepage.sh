@@ -1,8 +1,8 @@
-if [ ! -d /srv/roomhunter-web ]; then
-    mkdir /srv/roomhunter-web
+if [ ! -d /srv/web ]; then
+    mkdir /srv/web
 fi
 
-cd /srv/roomhunter-web
+cd /srv/web
 
 # overwrite if exists already
-svn export --force https://github.com/roomhunter/roomhunter-homepage/trunk/dist homepage
+svn export --force https://github.com/roomhunter/web-homepage/trunk/dist homepage

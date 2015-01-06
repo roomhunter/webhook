@@ -7,7 +7,7 @@ var hook = require('./github-webhook.js')({
 });
 
 // listen to push on github on branch master
-hook.on('push:roomhunter-homepage', function (payload) {
+hook.on('push:web-homepage', function (payload) {
     child_process.execFile('./services/deploy-homepage.sh', function(err, stdout, stderr) {
         if (err) {
             console.log(err);
@@ -16,7 +16,7 @@ hook.on('push:roomhunter-homepage', function (payload) {
     });
 });
 
-hook.on('push:roomhunter-webapp', function (payload) {
+hook.on('push:web-mainapp', function (payload) {
 
 });
 
