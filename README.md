@@ -5,7 +5,7 @@ When events(push, release etc.) happened in repositories in GitHub, it sends a P
 This webhook handler is listening requests, to execute a re-deployment script. That's it.
 
 ```node
-hook.on('push:roomhunter-homepage', function (payload) {
+hook.on('push:web-homepage', function (payload) {
     child_process.execFile('./deploy-homepage.sh', function(err, stdout, stderr) {
         if (err) {
             //...
