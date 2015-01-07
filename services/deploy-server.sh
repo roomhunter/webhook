@@ -5,7 +5,7 @@ svn export --force https://github.com/roomhunter/server/trunk server
 
 cd server
 
-npm install
+npm update
 
 if ! forever restart index.js ; then
     export NODE_ENV=production
