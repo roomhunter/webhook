@@ -27,7 +27,12 @@ hook.on('push:web-homepage', function (payload) {
 });
 
 hook.on('push:web-mainapp', function (payload) {
-
+    child_process.execFile('./services/deploy-mainapp.sh', function(err, stdout, stderr) {
+        if (err) {
+            console.log(err);
+        }
+        console.log(stdout);
+    });
 });
 
 hook.on('push:server', function (payload) {
