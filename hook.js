@@ -35,6 +35,15 @@ hook.on('push:web-mainapp', function (payload) {
     });
 });
 
+hook.on('push:web-mobile', function (payload) {
+  child_process.execFile('./services/deploy-mobileapp.sh', function(err, stdout, stderr) {
+    if (err) {
+      console.log(err);
+    }
+    console.log(stdout);
+  });
+});
+
 hook.on('push:server', function (payload) {
   child_process.execFile('./services/deploy-server.sh', function(err, stdout, stderr) {
     if (err) {
