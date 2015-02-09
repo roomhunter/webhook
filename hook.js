@@ -1,7 +1,7 @@
 var child_process = require('child_process');
 //var fs = require('fs');
 var hook = require('./github-webhook.js')({
-    port: 3333,
+    port: 5000,
     path: '/github',
     logger: { log: console.log, error: console.error }
 });
@@ -26,7 +26,7 @@ hook.on('push:web-homepage', function (payload) {
     });
 });
 
-hook.on('push:web-mainapp', function (payload) {
+hook.on('push:web-desktop', function (payload) {
     child_process.execFile('./services/deploy-mainapp.sh', function(err, stdout, stderr) {
         if (err) {
             console.log(err);
