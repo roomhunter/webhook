@@ -1,5 +1,5 @@
 var child_process = require('child_process');
-var fs = require('fs');
+//var fs = require('fs');
 var hook = require('./github-webhook.js')({
     port: 3333,
     path: '/github',
