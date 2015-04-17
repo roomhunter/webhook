@@ -1,6 +1,6 @@
 cd /srv/
 
-cd wechat-server
+cd wechat-server/wechat-server
 
 npm update
 
