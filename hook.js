@@ -151,5 +151,8 @@ hook.on('push:angular-upyun', function (payload) {
 hook.on('push:angular-loading-bar', function (payload) {
     sendHonor(payload);
 });
+hook.on('push:databasebackup', function (payload) {
+    sendHonor(payload);
+});
 
 hook.listen();
