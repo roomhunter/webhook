@@ -56,7 +56,7 @@ function sendHonor(payload) {
     var realName = realnameMap[githubName] || realnameMap[githubUserName] || githubUserName;
 
     var confirmMail = mailTemplate.replace('{{NAME}}', realName).replace('{{COMMIT}}', message)
-    .replace('{{REPO}}', repo).replace('{{REPO_URL}}', url).replace('{{RESULT}}', 'not');
+    .replace('{{REPO}}', repo).replace('{{REPO_URL}}', url).replace('{{RESULT}}', 'ready be');
     mailContent.html = confirmMail;
     mailgun.messages().send(mailContent, function (err, body) {
         if (err) {
