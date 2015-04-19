@@ -1,7 +1,7 @@
 {
   "name": "roomhunter-webhook",
   "description": "",
-  "version": "1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/roomhunter/roomhunter-webhook",
   "author": {
     "name": "to0",
@@ -22,9 +22,10 @@
   ],
   "main": "app",
   "engines": {
-    "node": ">0.6.12"
+    "node": ">0.8.0"
   },
   "dependencies": {
+      "mailgun-js": "^0.6.9"
   },
   "keywords": [ "github", "payload", "git hook", "post-receive" ]
 }

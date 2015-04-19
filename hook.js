@@ -1,10 +1,50 @@
 var child_process = require('child_process');
-//var fs = require('fs');
+var mailgun = require('mailgun-js')({apiKey: 'key-b12de0859c16bb24cad2299d68129299', domain: 'roomhunter.us'});
+var fs = require('fs');
 var hook = require('./github-webhook.js')({
     port: 5000,
     path: '/github',
     logger: { log: console.log, error: console.error }
 });
+
+// var mailgun = new Mailgun;
+var mailTemplate = fs.readFileSync('deploy-confirm.html', 'utf-8');
+var mailContent = {
+    //Specify email data
+    from: "roomhunter <support@roomhunter.us>",
+    //The email to contact
+    to:'yc2995@columbia.edu',
+    //Subject and text data
+    subject: 'Code Deployed!',
+    html: ''
+};
+var realnameMap = {
+    'to0': 'Yuannan Cai',
+    'Staniel': 'Lixin Yao',
+    'si-yao': 'Siyao Li',
+    'j3y2z1': 'Yuzhong Ji',
+    'TerrenceRush': 'Xinyue Li'
+}
+function sendConfirmation(payload) {
+    var repo = payload.repository['full_name'];
+    var commit = payload.commits[0];
+    var message = commit.message;
+    var url = commit.url;
+    var githubName = commit.author.name;
+    var githubUserName = commit.author.username
+    var realName = realnameMap[githubName] || realnameMap[githubUserName] || githubUserName;
+
+    var confirmMail = mailTemplate.replace('{{NAME}}', realName).replace('{{COMMIT}}', message).replace('{{REPO}}', repo).replace('{{REPO_URL}}', url);
+    mailContent.html = confirmMail;
+    mailgun.messages().send(mailContent, function (err, body) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log('confirmation sent');
+        }
+    });
+}
 
 // listen to push on github on branch master
 
@@ -14,6 +54,7 @@ hook.on('push:webhook', function (payload) {
             console.log(err);
         }
         console.log(stdout);
+        sendConfirmation(payload);
     });
 });
 
@@ -23,6 +64,7 @@ hook.on('push:web-homepage', function (payload) {
             console.log(err);
         }
         console.log(stdout);
+        sendConfirmation(payload);
     });
 });
 
@@ -32,6 +74,7 @@ hook.on('push:web-desktop', function (payload) {
             console.log(err);
         }
         console.log(stdout);
+        sendConfirmation(payload);
     });
 });
 
@@ -41,6 +84,7 @@ hook.on('push:web-mobile', function (payload) {
       console.log(err);
     }
     console.log(stdout);
+    sendConfirmation(payload);
   });
 });
 
@@ -50,15 +94,18 @@ hook.on('push:server', function (payload) {
       console.log(err);
     }
     console.log(stdout);
+    sendConfirmation(payload);
   });
 });
 
 hook.on('push:nginx-config', function (payload) {
+
     child_process.execFile('./services/update-nginx.sh', function(err, stdout, stderr) {
         if (err) {
             console.log(err);
         }
         console.log(stdout);
+        sendConfirmation(payload);
     });
 });
 
