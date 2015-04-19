@@ -13,7 +13,7 @@ var mailContent = {
     //Specify email data
     from: "roomhunter <support@roomhunter.us>",
     //The email to contact
-    to:'yc2995@columbia.edu',
+    to:'roomhunterteam@googlegroups.com',
     //Subject and text data
     subject: 'Code Deployed!',
     html: ''
