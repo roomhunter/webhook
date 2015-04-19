@@ -22,7 +22,7 @@ var realnameMap = {
     'to0': 'Yuannan Cai',
     'Staniel': 'Lixin Yao',
     'si-yao': 'Siyao Li',
-    'j3y2z1': '鸡总君',
+    'j3y2z1': '鸡总君,请多多指教',
     'TerrenceRush': 'Xinyue Li'
 }
 function sendConfirmation(payload) {
