@@ -1,3 +1,5 @@
+cd /srv/webhook
+
 git pull
 
 npm install
