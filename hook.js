@@ -54,7 +54,7 @@ hook.on('push:webhook', function (payload) {
             console.log(err);
         }
         console.log(stdout);
-        sendConfirmation(payload);
+        // sendConfirmation(payload);
     });
 });
 
