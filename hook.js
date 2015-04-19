@@ -34,7 +34,29 @@ function sendConfirmation(payload) {
     var githubUserName = commit.author.username
     var realName = realnameMap[githubName] || realnameMap[githubUserName] || githubUserName;
 
-    var confirmMail = mailTemplate.replace('{{NAME}}', realName).replace('{{COMMIT}}', message).replace('{{REPO}}', repo).replace('{{REPO_URL}}', url);
+    var confirmMail = mailTemplate.replace('{{NAME}}', realName).replace('{{COMMIT}}', message)
+    .replace('{{REPO}}', repo).replace('{{REPO_URL}}', url).replace('{{RESULT}}', 'successfully');
+    mailContent.html = confirmMail;
+    mailgun.messages().send(mailContent, function (err, body) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log('confirmation sent');
+        }
+    });
+}
+function sendHonor(payload) {
+    var repo = payload.repository['full_name'];
+    var commit = payload.commits[0];
+    var message = commit.message;
+    var url = commit.url;
+    var githubName = commit.author.name;
+    var githubUserName = commit.author.username
+    var realName = realnameMap[githubName] || realnameMap[githubUserName] || githubUserName;
+
+    var confirmMail = mailTemplate.replace('{{NAME}}', realName).replace('{{COMMIT}}', message)
+    .replace('{{REPO}}', repo).replace('{{REPO_URL}}', url).replace('{{RESULT}}', 'not');
     mailContent.html = confirmMail;
     mailgun.messages().send(mailContent, function (err, body) {
         if (err) {
@@ -108,6 +130,26 @@ hook.on('push:nginx-config', function (payload) {
         sendConfirmation(payload);
     });
 });
+hook.on('push:wechat-server', function (payload) {
 
+    child_process.execFile('./services/deploy-wechat.sh', function(err, stdout, stderr) {
+        if (err) {
+            console.log(err);
+        }
+        console.log(stdout);
+        sendConfirmation(payload);
+    });
+});
+
+hook.on('push:match-recommend', function (payload) {
+    sendHonor(payload);
+});
+
+hook.on('push:angular-upyun', function (payload) {
+    sendHonor(payload);
+});
+hook.on('push:angular-loading-bar', function (payload) {
+    sendHonor(payload);
+});
 
 hook.listen();
