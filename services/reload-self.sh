@@ -1,10 +1,10 @@
-cd /srv/webhook
+#cd /srv/webhook
 
 git pull
 
-npm install
+#npm install
 
-if ! forever restart hook.js ; then
-    export NODE_ENV=production
-    forever start -a --uid "webhook" -o /srv/logs/webhook/out.log -e /srv/logs/webhook/err.log hook.js
-fi
+#if ! forever restart hook.js ; then
+#    export NODE_ENV=production
+#    forever start -a --uid "webhook" -o /srv/logs/webhook/out.log -e /srv/logs/webhook/err.log hook.js
+#fi

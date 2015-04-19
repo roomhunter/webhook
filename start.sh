@@ -13,4 +13,4 @@ fi
 cp services/roomhunter /etc/init.d/roomhunter
 ln -s /etc/init.d/roomhunter /etc/rc2.d/S90roomhunter
 
-forever start -a --uid "webhook" -o /srv/logs/webhook/out.log -e /srv/logs/webhook/err.log hook.js
+forever start -a -w --uid "webhook" -o /srv/logs/webhook/out.log -e /srv/logs/webhook/err.log hook.js
