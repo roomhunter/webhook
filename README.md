@@ -1,4 +1,14 @@
-### Auto-deployment to staging server on each PUSH
+Webhook Internal Tool
+=====================
+
+Features
+--------
+
+-	Auto-deployment to staging server on each PUSH
+-	Show the team your work with an email of honor
+
+Usage
+-----
 
 When events(push, release etc.) happened in repositories in GitHub, it sends a POST request to a url.
 
