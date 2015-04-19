@@ -9,6 +9,7 @@ case "$1" in
         cd webhook
         ./start.sh
         ./services/deploy-server.sh
+        ./services/deploy-wechat.sh
         ./services/deploy-homepage.sh
         ./services/update-nginx.sh
         ;;                         
