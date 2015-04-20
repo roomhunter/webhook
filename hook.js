@@ -126,7 +126,7 @@ hook.on('push:web-homepage', function (payload) {
         }
         else {
             syncFilesToCDN('/srv/web/homepage', function(){
-              sendConfirmation(payload);
+                sendConfirmation(payload);
             });
         }
     });
@@ -138,8 +138,12 @@ hook.on('push:web-desktop', function (payload) {
             console.error(err);
             return;
         }
-        console.log(stdout);
-        sendConfirmation(payload);
+        else {
+          syncFilesToCDN('/srv/web/mainapp', function(){
+              sendConfirmation(payload);
+          });
+        }
+
     });
 });
 
