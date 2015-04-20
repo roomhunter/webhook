@@ -58,7 +58,9 @@ function syncFilesToCDN(localRoot, success) {
     params.localDir = localRoot + '/scripts';
     params.s3Params = localRoot + 'scripts/';
     var scriptsUploader = s3Client.uploadDir(params);
-    scriptsUploader.on('error', console.log(err.stack));
+    scriptsUploader.on('error', function(err) {
+      console.error("unable to upload:", err.stack);
+    });
     scriptsUploader.on('end', callback);
   });
 }
