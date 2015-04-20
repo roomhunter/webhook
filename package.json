@@ -22,10 +22,11 @@
   ],
   "main": "app",
   "engines": {
-    "node": ">0.8.0"
+    "node": ">0.10.0"
   },
   "dependencies": {
-      "mailgun-js": "^0.6.9"
+    "mailgun-js": "^0.6.9",
+    "s3": "~4.4.0"
   },
   "keywords": [ "github", "payload", "git hook", "post-receive" ]
 }

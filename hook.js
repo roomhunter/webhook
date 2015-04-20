@@ -1,6 +1,19 @@
 var child_process = require('child_process');
 var mailgun = require('mailgun-js')({apiKey: 'key-b12de0859c16bb24cad2299d68129299', domain: 'roomhunter.us'});
 var fs = require('fs');
+var s3 = require('s3');
+var s3Client = s3.createClient({
+  maxAsyncS3: 20,     // this is the default
+  s3RetryCount: 3,    // this is the default
+  s3RetryDelay: 1000, // this is the default
+  multipartUploadThreshold: 20971520, // this is the default (20 MB)
+  multipartUploadSize: 15728640, // this is the default (15 MB)
+  s3Options: {
+    accessKeyId: "AKIAJXUH6VIFF2GWRTOQ",
+    secretAccessKey: "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"
+    // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#constructor-property
+  }
+});
 var hook = require('./github-webhook.js')({
     port: 5000,
     path: '/github',
@@ -24,7 +37,32 @@ var realnameMap = {
     'si-yao': 'Siyao Li',
     'j3y2z1': '鸡总君,请多多指教',
     'TerrenceRush': 'Xinyue Li'
+};
+function syncFilesToCDN(localRoot, success) {
+  var callback = success || function(){};
+
+  var params = {
+    localDir: localRoot + "/styles",
+    deleteRemoved: false,
+    s3Params: {
+      Bucket: "roomhunter-static",
+      Prefix: "styles/"
+      // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property
+    }
+  };
+  var stylesUploader = s3Client.uploadDir(params);
+  stylesUploader.on('error', function(err) {
+    console.error("unable to upload:", err.stack);
+  });
+  stylesUploader.on('end', function() {
+    params.localDir = localRoot + '/scripts';
+    params.s3Params = localRoot + 'scripts/';
+    var scriptsUploader = s3Client.uploadDir(params);
+    scriptsUploader.on('error', console.log(err.stack));
+    scriptsUploader.on('end', callback);
+  });
 }
+
 function sendConfirmation(payload) {
     var repo = payload.repository['full_name'];
     var commit = payload.commits[0];
@@ -39,7 +77,7 @@ function sendConfirmation(payload) {
     mailContent.html = confirmMail;
     mailgun.messages().send(mailContent, function (err, body) {
         if (err) {
-            console.log(err);
+            console.error(err);
         }
         else {
             console.log('confirmation sent');
@@ -60,7 +98,7 @@ function sendHonor(payload) {
     mailContent.html = confirmMail;
     mailgun.messages().send(mailContent, function (err, body) {
         if (err) {
-            console.log(err);
+            console.error(err);
         }
         else {
             console.log('confirmation sent');
@@ -73,27 +111,30 @@ function sendHonor(payload) {
 hook.on('push:webhook', function (payload) {
     child_process.execFile('./services/reload-self.sh', function(err, stdout, stderr) {
         if (err) {
-            console.log(err);
+            console.error(err);
         }
-        console.log(stdout);
-        // sendConfirmation(payload);
     });
 });
 
 hook.on('push:web-homepage', function (payload) {
     child_process.execFile('./services/deploy-homepage.sh', function(err, stdout, stderr) {
         if (err) {
-            console.log(err);
+            console.error(err);
+            return;
         }
-        console.log(stdout);
-        sendConfirmation(payload);
+        else {
+            syncFilesToCDN('/srv/web/homepage', function(){
+              sendConfirmation(payload);
+            });
+        }
     });
 });
 
 hook.on('push:web-desktop', function (payload) {
     child_process.execFile('./services/deploy-mainapp.sh', function(err, stdout, stderr) {
         if (err) {
-            console.log(err);
+            console.error(err);
+            return;
         }
         console.log(stdout);
         sendConfirmation(payload);
@@ -103,7 +144,8 @@ hook.on('push:web-desktop', function (payload) {
 hook.on('push:web-mobile', function (payload) {
   child_process.execFile('./services/deploy-mobileapp.sh', function(err, stdout, stderr) {
     if (err) {
-      console.log(err);
+      console.error(err);
+      return;
     }
     console.log(stdout);
     sendConfirmation(payload);
@@ -113,7 +155,8 @@ hook.on('push:web-mobile', function (payload) {
 hook.on('push:server', function (payload) {
   child_process.execFile('./services/deploy-server.sh', function(err, stdout, stderr) {
     if (err) {
-      console.log(err);
+      console.error(err);
+      return;
     }
     console.log(stdout);
     sendConfirmation(payload);
@@ -124,7 +167,8 @@ hook.on('push:nginx-config', function (payload) {
 
     child_process.execFile('./services/update-nginx.sh', function(err, stdout, stderr) {
         if (err) {
-            console.log(err);
+            console.error(err);
+            return;
         }
         console.log(stdout);
         sendConfirmation(payload);
@@ -134,7 +178,8 @@ hook.on('push:wechat-server', function (payload) {
 
     child_process.execFile('./services/deploy-wechat.sh', function(err, stdout, stderr) {
         if (err) {
-            console.log(err);
+            console.error(err);
+            return;
         }
         console.log(stdout);
         sendConfirmation(payload);
