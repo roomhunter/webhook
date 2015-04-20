@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ ! -d /srv/web ]; then
     mkdir /srv/web
 fi

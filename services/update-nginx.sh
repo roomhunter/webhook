@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd /etc
 
 # overwrite if exists already

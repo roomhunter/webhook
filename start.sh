@@ -1,3 +1,5 @@
+#!/bin/bash
+
 npm install
 
 if [ ! -d /srv/logs ]; then

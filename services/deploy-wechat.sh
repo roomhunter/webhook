@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd /srv/
 
 cd wechat-server/wechat-server

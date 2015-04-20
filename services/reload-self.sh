@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd /srv/webhook
 
 git pull

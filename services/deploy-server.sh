@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd /srv/
 
 # overwrite if exists already
