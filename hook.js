@@ -88,12 +88,23 @@ function uploadFilesToCDN(localRoot, success) {
       callback(null);
     });
   });
-  for (var index in cssFiles) {
+  for(var index in cssFiles) {
     tasks.push(function(callback) {
       ossClient.putObject({
         bucket: 'roomhunter-static',
         object: 'styles/' + cssFiles[index],
         source: localRoot + '/styles/' + cssFiles[index]
+      }, function (err, res) {
+        callback(err);
+      });
+    });
+  }
+  for(var index in jsFiles) {
+    tasks.push(function(callback) {
+      ossClient.putObject({
+        bucket: 'roomhunter-static',
+        object: 'scripts/' + jsFiles[index],
+        source: localRoot + '/scripts/' + jsFiles[index]
       }, function (err, res) {
         callback(err);
       });
