@@ -1,31 +1,10 @@
 var child_process = require('child_process');
 var mailgun = require('mailgun-js')({apiKey: 'key-b12de0859c16bb24cad2299d68129299', domain: 'roomhunter.us'});
 var fs = require('fs');
-var async = require("async");
-var s3 = require('s3');
-var oss = require('aliyun-oss');
 var hook = require('./github-webhook.js')({
   port: 5000,
   path: '/github',
   logger: { log: console.log, error: console.error }
-});
-
-var ossClient = oss.createClient({
-  accessKeyId: 'jVRXxBKUuZ76UIAd',
-  accessKeySecret: 'gHefCKUnncYHFXIoeYObBwdQJBoBWD'
-
-});
-var s3Client = s3.createClient({
-  maxAsyncS3: 20,     // this is the default
-  s3RetryCount: 3,    // this is the default
-  s3RetryDelay: 1000, // this is the default
-  multipartUploadThreshold: 20971520, // this is the default (20 MB)
-  multipartUploadSize: 15728640, // this is the default (15 MB)
-  s3Options: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-    // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#constructor-property
-  }
 });
 
 // var mailgun = new Mailgun;
@@ -46,104 +25,6 @@ var realnameMap = {
     'j3y2z1': '鸡总君,请多多指教',
     'TerrenceRush': 'Xinyue Li'
 };
-function uploadFilesToCDN(localRoot, success) {
-  var callback = success || function(){};
-
-  var cssFiles = fs.readdirSync(localRoot + '/styles');
-  var jsFiles = fs.readdirSync(localRoot + '/scripts');
-  var fontFiles = fs.readdirSync(localRoot + '/font');
-  for (var index in cssFiles) {
-    cssFiles[index] = 'styles/' + cssFiles[index];
-  }
-  for (var index in jsFiles) {
-    jsFiles[index] = 'scripts/' + jsFiles[index];
-  }
-  for (var index in fontFiles) {
-    fontFiles[index] = 'font/' + fontFiles[index];
-  }
-  var staticFiles = cssFiles.concat(jsFiles, fontFiles);
-  async.each(staticFiles, function(file, callback) {
-    ossClient.putObject({
-      bucket: 'roomhunter-static',
-      object: file,
-      source: localRoot + '/' + file
-    }, function (err, res) {
-      callback(err);
-    });
-  }, function(err) {
-    if(err) {
-      console.error(err);
-    }
-    else {
-      var tasks = [];
-      tasks.push(function(callback){
-        var params = {
-          localDir: localRoot + "/styles",
-          deleteRemoved: false,
-          s3Params: {
-            Bucket: "roomhunter-static",
-            Prefix: "styles/"
-          }
-        };
-        var stylesUploader = s3Client.uploadDir(params);
-        stylesUploader.on('error', function(err) {
-          console.error('unable to upload:', err.stack);
-          callback(err);
-        });
-        stylesUploader.on('end', function() {
-          callback(null);
-        });
-      });
-      tasks.push(function(callback){
-        var params = {
-          localDir: localRoot + "/scripts",
-          deleteRemoved: false,
-          s3Params: {
-            Bucket: "roomhunter-static",
-            Prefix: "scripts/"
-          }
-        };
-        var stylesUploader = s3Client.uploadDir(params);
-        stylesUploader.on('error', function(err) {
-          console.error('unable to upload:', err.stack);
-          callback(err);
-        });
-        stylesUploader.on('end', function() {
-          callback(null);
-        });
-      });
-      tasks.push(function(callback){
-        var params = {
-          localDir: localRoot + "/font",
-          deleteRemoved: false,
-          s3Params: {
-            Bucket: "roomhunter-static",
-            Prefix: "font/"
-          }
-        };
-        var stylesUploader = s3Client.uploadDir(params);
-        stylesUploader.on('error', function(err) {
-          console.error('unable to upload:', err.stack);
-          callback(err);
-        });
-        stylesUploader.on('end', function() {
-          callback(null);
-        });
-      });
-
-      async.parallel(tasks, function(err, results){
-        if (!err) {
-          async.each()
-          success();
-        }
-        else {
-          console.error(err);
-        }
-      });
-    }
-  });
-
-}
 
 function sendConfirmation(payload) {
     var repo = payload.repository['full_name'];
@@ -205,9 +86,7 @@ hook.on('push:web-homepage', function (payload) {
             return;
         }
         else {
-            uploadFilesToCDN('/srv/web/homepage', function(){
-                sendConfirmation(payload);
-            });
+            sendConfirmation(payload);
         }
     });
 });
@@ -219,9 +98,7 @@ hook.on('push:web-desktop', function (payload) {
             return;
         }
         else {
-          //uploadFilesToCDN('/srv/web/mainapp', function(){
-              sendConfirmation(payload);
-          //});
+            sendConfirmation(payload);
         }
 
     });
