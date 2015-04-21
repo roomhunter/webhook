@@ -14,12 +14,15 @@ svn export --force https://github.com/roomhunter/web-homepage/trunk/dist homepag
 
 cd homepage
 # need to install s3cmd first to use
-s3cmd put -r styles/ s3://roomhunter-static/styles/
-s3cmd put -r scripts/ s3://roomhunter-static/scripts/
-s3cmd put -r font/ s3://roomhunter-static/font/
+# apt-get install python-setuptools
+# cd s3cmd-1.5.2
+# python setup.py install
+s3cmd put -r --acl-public styles/ s3://roomhunter-static/styles/
+s3cmd put -r --acl-public scripts/ s3://roomhunter-static/scripts/
+s3cmd put -r --acl-public font/ s3://roomhunter-static/font/
 
 # configure osscmd first to use
-# alias osscmd='python /srv/webhook/services/osscmd'
+# alias osscmd='python /srv/webhook/services/oss_python_sdk_20150413/osscmd'
 osscmd uploadfromdir styles oss://roomhunter-static/styles
 osscmd uploadfromdir scripts oss://roomhunter-static/scripts
 osscmd put font/rh-icons.eot oss://roomhunter-static/font/rh-icons.eot --headers="Access-Control-Allow-Origin:*"
