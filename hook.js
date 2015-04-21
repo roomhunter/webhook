@@ -191,9 +191,9 @@ hook.on('push:web-desktop', function (payload) {
             return;
         }
         else {
-          uploadFilesToCDN('/srv/web/mainapp', function(){
+          //uploadFilesToCDN('/srv/web/mainapp', function(){
               sendConfirmation(payload);
-          });
+          //});
         }
 
     });
