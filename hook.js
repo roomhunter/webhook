@@ -3,19 +3,17 @@ var mailgun = require('mailgun-js')({apiKey: 'key-b12de0859c16bb24cad2299d681292
 var fs = require('fs');
 var async = require("async");
 var s3 = require('s3');
-var oss = require('ali-sdk').oss;
+var oss = require('aliyun-oss');
 var hook = require('./github-webhook.js')({
   port: 5000,
   path: '/github',
   logger: { log: console.log, error: console.error }
 });
 
-var ossClient = oss({
+var ossClient = oss.createClient({
   accessKeyId: 'jVRXxBKUuZ76UIAd',
-  accessKeySecret: 'gHefCKUnncYHFXIoeYObBwdQJBoBWD',
-  bucket: 'roomhunter-static',
-  region: 'oss-cn-hangzhou',
-  internal: 'false'
+  accessKeySecret: 'gHefCKUnncYHFXIoeYObBwdQJBoBWD'
+
 });
 var s3Client = s3.createClient({
   maxAsyncS3: 20,     // this is the default
@@ -92,24 +90,14 @@ function uploadFilesToCDN(localRoot, success) {
       },
       function(callback) {
         for (var index in cssFiles) {
-          var obj = ossClient.put('styles/' + cssFiles[index], localRoot + '/styles/' + cssFiles[index]);
-          if(obj.res.status == 200) {
-            callback(null);
-          }
-          else {
-            callback(obj.res.status);
-          }
-        }
-      },
-      function(callback) {
-        for (var index in jsFiles) {
-          var obj = ossClient.put('scripts/' + cssFiles[index], localRoot + '/scripts/' + jsFiles[index]);
-          if(obj.res.status == 200) {
-            callback(null);
-          }
-          else {
-            callback(obj.res.status);
-          }
+          ossClient.putObject({
+            bucket: 'roomhunter-static',
+            object: 'styles/' + cssFiles[index],
+            source: localRoot + '/styles/' + cssFiles[index]
+          }, function (err, res) {
+            callback(err);
+          });
+
         }
       }
     ],

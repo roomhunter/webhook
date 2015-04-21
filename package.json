@@ -28,7 +28,7 @@
     "async": "~0.9.0",
     "mailgun-js": "^0.6.9",
     "s3": "~4.4.0",
-    "ali-oss": "~2.2.0"
+    "aliyun-oss": "~0.6.0"
   },
   "keywords": [ "github", "payload", "git hook", "post-receive" ]
 }
