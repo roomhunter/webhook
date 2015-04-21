@@ -144,6 +144,9 @@ function uploadFilesToCDN(localRoot, success) {
     if (!err) {
       success();
     }
+    else {
+      console.error(err);
+    }
   });
 }
 
