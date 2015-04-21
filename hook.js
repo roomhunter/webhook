@@ -138,7 +138,6 @@ function uploadFilesToCDN(localRoot, success) {
       }, function (err, res) {
         callback(err);
       })
-      })
     });
   }
   async.parallel(tasks, function(err, results){
