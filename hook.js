@@ -52,102 +52,97 @@ function uploadFilesToCDN(localRoot, success) {
   var cssFiles = fs.readdirSync(localRoot + '/styles');
   var jsFiles = fs.readdirSync(localRoot + '/scripts');
   var fontFiles = fs.readdirSync(localRoot + '/font');
-  var tasks = [];
-  tasks.push(function(callback){
-    var params = {
-      localDir: localRoot + "/styles",
-      deleteRemoved: false,
-      s3Params: {
-        Bucket: "roomhunter-static",
-        Prefix: "styles/"
-      }
-    };
-    var stylesUploader = s3Client.uploadDir(params);
-    stylesUploader.on('error', function(err) {
-      console.error('unable to upload:', err.stack);
+  for (var index in cssFiles) {
+    cssFiles[index] = 'styles/' + cssFiles[index];
+  }
+  for (var index in jsFiles) {
+    jsFiles[index] = 'scripts/' + jsFiles[index];
+  }
+  for (var index in fontFiles) {
+    fontFiles[index] = 'font/' + fontFiles[index];
+  }
+  var staticFiles = cssFiles.concat(jsFiles, fontFiles);
+  async.each(staticFiles, function(file, callback) {
+    ossClient.putObject({
+      bucket: 'roomhunter-static',
+      object: file,
+      source: localRoot + '/' + file
+    }, function (err, res) {
       callback(err);
     });
-    stylesUploader.on('end', function() {
-      callback(null);
-    });
-  });
-  tasks.push(function(callback){
-    var params = {
-      localDir: localRoot + "/scripts",
-      deleteRemoved: false,
-      s3Params: {
-        Bucket: "roomhunter-static",
-        Prefix: "scripts/"
-      }
-    };
-    var stylesUploader = s3Client.uploadDir(params);
-    stylesUploader.on('error', function(err) {
-      console.error('unable to upload:', err.stack);
-      callback(err);
-    });
-    stylesUploader.on('end', function() {
-      callback(null);
-    });
-  });
-  tasks.push(function(callback){
-    var params = {
-      localDir: localRoot + "/font",
-      deleteRemoved: false,
-      s3Params: {
-        Bucket: "roomhunter-static",
-        Prefix: "font/"
-      }
-    };
-    var stylesUploader = s3Client.uploadDir(params);
-    stylesUploader.on('error', function(err) {
-      console.error('unable to upload:', err.stack);
-      callback(err);
-    });
-    stylesUploader.on('end', function() {
-      callback(null);
-    });
-  });
-  for(var index in cssFiles) {
-    tasks.push(function(callback) {
-      ossClient.putObject({
-        bucket: 'roomhunter-static',
-        object: 'styles/' + cssFiles[index],
-        source: localRoot + '/styles/' + cssFiles[index]
-      }, function (err, res) {
-        callback(err);
-      });
-    });
-  }
-  for(var index in jsFiles) {
-    tasks.push(function(callback) {
-      ossClient.putObject({
-        bucket: 'roomhunter-static',
-        object: 'scripts/' + jsFiles[index],
-        source: localRoot + '/scripts/' + jsFiles[index]
-      }, function (err, res) {
-        callback(err);
-      });
-    });
-  }
-  for(var index in fontFiles) {
-    tasks.push(function(callback) {
-      ossClient.putObject({
-        bucket: 'roomhunter-static',
-        object: 'font/' + fontFiles[index],
-        source: localRoot + '/font/' + fontFiles[index]
-      }, function (err, res) {
-        callback(err);
-      })
-    });
-  }
-  async.parallel(tasks, function(err, results){
-    if (!err) {
-      success();
-    }
-    else {
+  }, function(err) {
+    if(err) {
       console.error(err);
     }
+    else {
+      var tasks = [];
+      tasks.push(function(callback){
+        var params = {
+          localDir: localRoot + "/styles",
+          deleteRemoved: false,
+          s3Params: {
+            Bucket: "roomhunter-static",
+            Prefix: "styles/"
+          }
+        };
+        var stylesUploader = s3Client.uploadDir(params);
+        stylesUploader.on('error', function(err) {
+          console.error('unable to upload:', err.stack);
+          callback(err);
+        });
+        stylesUploader.on('end', function() {
+          callback(null);
+        });
+      });
+      tasks.push(function(callback){
+        var params = {
+          localDir: localRoot + "/scripts",
+          deleteRemoved: false,
+          s3Params: {
+            Bucket: "roomhunter-static",
+            Prefix: "scripts/"
+          }
+        };
+        var stylesUploader = s3Client.uploadDir(params);
+        stylesUploader.on('error', function(err) {
+          console.error('unable to upload:', err.stack);
+          callback(err);
+        });
+        stylesUploader.on('end', function() {
+          callback(null);
+        });
+      });
+      tasks.push(function(callback){
+        var params = {
+          localDir: localRoot + "/font",
+          deleteRemoved: false,
+          s3Params: {
+            Bucket: "roomhunter-static",
+            Prefix: "font/"
+          }
+        };
+        var stylesUploader = s3Client.uploadDir(params);
+        stylesUploader.on('error', function(err) {
+          console.error('unable to upload:', err.stack);
+          callback(err);
+        });
+        stylesUploader.on('end', function() {
+          callback(null);
+        });
+      });
+
+      async.parallel(tasks, function(err, results){
+        if (!err) {
+          async.each()
+          success();
+        }
+        else {
+          console.error(err);
+        }
+      });
+    }
   });
+
 }
 
 function sendConfirmation(payload) {
