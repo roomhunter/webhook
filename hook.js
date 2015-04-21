@@ -51,6 +51,7 @@ function uploadFilesToCDN(localRoot, success) {
 
   var cssFiles = fs.readdirSync(localRoot + '/styles');
   var jsFiles = fs.readdirSync(localRoot + '/scripts');
+  var fontFiles = fs.readdirSync(localRoot + '/font');
   var tasks = [];
   tasks.push(function(callback){
     var params = {
@@ -88,6 +89,24 @@ function uploadFilesToCDN(localRoot, success) {
       callback(null);
     });
   });
+  tasks.push(function(callback){
+    var params = {
+      localDir: localRoot + "/font",
+      deleteRemoved: false,
+      s3Params: {
+        Bucket: "roomhunter-static",
+        Prefix: "font/"
+      }
+    };
+    var stylesUploader = s3Client.uploadDir(params);
+    stylesUploader.on('error', function(err) {
+      console.error('unable to upload:', err.stack);
+      callback(err);
+    });
+    stylesUploader.on('end', function() {
+      callback(null);
+    });
+  });
   for(var index in cssFiles) {
     tasks.push(function(callback) {
       ossClient.putObject({
@@ -108,6 +127,18 @@ function uploadFilesToCDN(localRoot, success) {
       }, function (err, res) {
         callback(err);
       });
+    });
+  }
+  for(var index in fontFiles) {
+    tasks.push(function(callback) {
+      ossClient.putObject({
+        bucket: 'roomhunter-static',
+        object: 'font/' + fontFiles[index],
+        source: localRoot + '/font/' + fontFiles[index]
+      }, function (err, res) {
+        callback(err);
+      })
+      })
     });
   }
   async.parallel(tasks, function(err, results){
