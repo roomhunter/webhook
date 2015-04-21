@@ -1,7 +1,22 @@
 var child_process = require('child_process');
 var mailgun = require('mailgun-js')({apiKey: 'key-b12de0859c16bb24cad2299d68129299', domain: 'roomhunter.us'});
 var fs = require('fs');
+var async = require("async");
 var s3 = require('s3');
+var oss = require('ali-sdk').oss;
+var hook = require('./github-webhook.js')({
+  port: 5000,
+  path: '/github',
+  logger: { log: console.log, error: console.error }
+});
+
+var ossClient = oss({
+  accessKeyId: 'jVRXxBKUuZ76UIAd',
+  accessKeySecret: 'gHefCKUnncYHFXIoeYObBwdQJBoBWD',
+  bucket: 'roomhunter-static',
+  region: 'oss-cn-hangzhou',
+  internal: 'false'
+});
 var s3Client = s3.createClient({
   maxAsyncS3: 20,     // this is the default
   s3RetryCount: 3,    // this is the default
@@ -13,11 +28,6 @@ var s3Client = s3.createClient({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
     // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#constructor-property
   }
-});
-var hook = require('./github-webhook.js')({
-    port: 5000,
-    path: '/github',
-    logger: { log: console.log, error: console.error }
 });
 
 // var mailgun = new Mailgun;
@@ -38,31 +48,77 @@ var realnameMap = {
     'j3y2z1': '鸡总君,请多多指教',
     'TerrenceRush': 'Xinyue Li'
 };
-function syncFilesToCDN(localRoot, success) {
+function uploadFilesToCDN(localRoot, success) {
   var callback = success || function(){};
 
-  var params = {
-    localDir: localRoot + "/styles",
-    deleteRemoved: false,
-    s3Params: {
-      Bucket: "roomhunter-static",
-      Prefix: "styles/"
-      // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property
-    }
-  };
-  var stylesUploader = s3Client.uploadDir(params);
-  stylesUploader.on('error', function(err) {
-    console.error("unable to upload:", err.stack);
-  });
-  stylesUploader.on('end', function() {
-    params.localDir = localRoot + '/scripts';
-    params.s3Params.Prefix = 'scripts/';
-    var scriptsUploader = s3Client.uploadDir(params);
-    scriptsUploader.on('error', function(err) {
-      console.error("unable to upload:", err.stack);
+  var cssFiles = fs.readdirSync(localRoot + '/styles');
+  var jsFiles = fs.readdirSync(localRoot + '/scripts');
+  async.parallel([
+      function(callback){
+        var params = {
+          localDir: localRoot + "/styles",
+          deleteRemoved: false,
+          s3Params: {
+            Bucket: "roomhunter-static",
+            Prefix: "styles/"
+          }
+        };
+        var stylesUploader = s3Client.uploadDir(params);
+        stylesUploader.on('error', function(err) {
+          console.error('unable to upload:', err.stack);
+          callback(err);
+        });
+        stylesUploader.on('end', function() {
+          callback(null);
+        });
+      },
+      function(callback){
+        var params = {
+          localDir: localRoot + "/scripts",
+          deleteRemoved: false,
+          s3Params: {
+            Bucket: "roomhunter-static",
+            Prefix: "scripts/"
+          }
+        };
+        var stylesUploader = s3Client.uploadDir(params);
+        stylesUploader.on('error', function(err) {
+          console.error('unable to upload:', err.stack);
+          callback(err);
+        });
+        stylesUploader.on('end', function() {
+          callback(null);
+        });
+      },
+      function(callback) {
+        for (var index in cssFiles) {
+          var obj = ossClient.put('styles/' + cssFiles[index], localRoot + '/styles/' + cssFiles[index]);
+          if(obj.res.status == 200) {
+            callback(null);
+          }
+          else {
+            callback(obj.res.status);
+          }
+        }
+      },
+      function(callback) {
+        for (var index in jsFiles) {
+          var obj = ossClient.put('scripts/' + cssFiles[index], localRoot + '/scripts/' + jsFiles[index]);
+          if(obj.res.status == 200) {
+            callback(null);
+          }
+          else {
+            callback(obj.res.status);
+          }
+        }
+      }
+    ],
+// optional callback
+    function(err, results){
+      if (!err) {
+        success();
+      }
     });
-    scriptsUploader.on('end', callback);
-  });
 }
 
 function sendConfirmation(payload) {
@@ -125,7 +181,7 @@ hook.on('push:web-homepage', function (payload) {
             return;
         }
         else {
-            syncFilesToCDN('/srv/web/homepage', function(){
+            uploadFilesToCDN('/srv/web/homepage', function(){
                 sendConfirmation(payload);
             });
         }
@@ -139,7 +195,7 @@ hook.on('push:web-desktop', function (payload) {
             return;
         }
         else {
-          syncFilesToCDN('/srv/web/mainapp', function(){
+          uploadFilesToCDN('/srv/web/mainapp', function(){
               sendConfirmation(payload);
           });
         }
