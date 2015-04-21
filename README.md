@@ -7,7 +7,7 @@ Features
 - [x]	Auto-deployment to staging server on each PUSH
 - [x] 	Show the team your work with an email of honor
 - [x]   Sync files(css, js) to AWS S3 to leverage both US & Mainland China CDN acceleration
-    - [ ]   & Upyun
+    - [x]   & Upyun
 
 Usage
 -----
