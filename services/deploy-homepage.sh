@@ -20,8 +20,8 @@ cd homepage
 # apt-get install python-setuptools
 # cd s3cmd-1.5.2
 # python setup.py install
-s3cmd put -r --acl-public styles/ s3://roomhunter-static/styles/
-s3cmd put -r --acl-public scripts/ s3://roomhunter-static/scripts/
+s3cmd put -r --acl-public --mime-type=text/css styles/ s3://roomhunter-static/styles/
+s3cmd put -r --acl-public --mime-type=application/javascript scripts/ s3://roomhunter-static/scripts/
 s3cmd put -r --acl-public font/ s3://roomhunter-static/font/
 
 # configure osscmd first to use
