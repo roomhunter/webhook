@@ -22,7 +22,7 @@ cd homepage
 # python setup.py install
 s3cmd put -r --acl-public --mime-type=text/css styles/ s3://roomhunter-static/styles/
 s3cmd put -r --acl-public --mime-type=application/javascript scripts/ s3://roomhunter-static/scripts/
-s3cmd put -r --acl-public font/ s3://roomhunter-static/font/
+s3cmd put -r --acl-public fonts/ s3://roomhunter-static/fonts/
 
 # configure osscmd first to use
 # set up access id and key to environment variable
@@ -30,8 +30,8 @@ s3cmd put -r --acl-public font/ s3://roomhunter-static/font/
 # osscmd config --id= --key=
 $osscmd uploadfromdir styles oss://roomhunter-static/styles
 $osscmd uploadfromdir scripts oss://roomhunter-static/scripts
-$osscmd put font/rh-icons.eot oss://roomhunter-static/font/rh-icons.eot --headers="Access-Control-Allow-Origin:*"
-$osscmd put font/rh-icons.svg oss://roomhunter-static/font/rh-icons.svg --headers="Access-Control-Allow-Origin:*"
-$osscmd put font/rh-icons.ttf oss://roomhunter-static/font/rh-icons.ttf --headers="Access-Control-Allow-Origin:*"
-$osscmd put font/rh-icons.woff oss://roomhunter-static/font/rh-icons.woff --headers="Access-Control-Allow-Origin:*"
+$osscmd put fonts/roomhunter.eot oss://roomhunter-static/fonts/roomhunter.eot --headers="Access-Control-Allow-Origin:*"
+$osscmd put fonts/roomhunter.svg oss://roomhunter-static/fonts/roomhunter.svg --headers="Access-Control-Allow-Origin:*"
+$osscmd put fonts/roomhunter.ttf oss://roomhunter-static/fonts/roomhunter.ttf --headers="Access-Control-Allow-Origin:*"
+$osscmd put fonts/roomhunter.woff oss://roomhunter-static/fonts/roomhunter.woff --headers="Access-Control-Allow-Origin:*"
 
