@@ -30,8 +30,8 @@ s3cmd put -r --acl-public fonts/ s3://roomhunter-static/fonts/
 # osscmd config --id= --key=
 $osscmd uploadfromdir styles oss://roomhunter-static/styles
 $osscmd uploadfromdir scripts oss://roomhunter-static/scripts
-$osscmd put fonts/roomhunter.eot oss://roomhunter-static/fonts/roomhunter.eot --headers="Access-Control-Allow-Origin:*"
-$osscmd put fonts/roomhunter.svg oss://roomhunter-static/fonts/roomhunter.svg --headers="Access-Control-Allow-Origin:*"
-$osscmd put fonts/roomhunter.ttf oss://roomhunter-static/fonts/roomhunter.ttf --headers="Access-Control-Allow-Origin:*"
-$osscmd put fonts/roomhunter.woff oss://roomhunter-static/fonts/roomhunter.woff --headers="Access-Control-Allow-Origin:*"
+FILES=`find ./fonts -type f -exec basename {} \;`
+for f in $FILES; do
+    $osscmd put fonts/$f oss://roomhunter-static/fonts/$f --headers="Access-Control-Allow-Origin:*"
+done
 
