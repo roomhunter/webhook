@@ -91,8 +91,8 @@ hook.on('push:web-homepage', function (payload) {
     });
 });
 
-hook.on('push:web-desktop', function (payload) {
-    child_process.execFile('./services/deploy-mainapp.sh', function(err, stdout, stderr) {
+hook.on('push:web-admin', function (payload) {
+    child_process.execFile('./services/deploy-agent.sh', function(err, stdout, stderr) {
         if (err) {
             console.error(err);
             return;
@@ -102,6 +102,18 @@ hook.on('push:web-desktop', function (payload) {
         }
 
     });
+});
+hook.on('push:web-desktop', function (payload) {
+  child_process.execFile('./services/deploy-mainapp.sh', function(err, stdout, stderr) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    else {
+      sendConfirmation(payload);
+    }
+
+  });
 });
 
 hook.on('push:web-mobile', function (payload) {
