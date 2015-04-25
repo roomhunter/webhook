@@ -20,10 +20,10 @@ cd homepage
 # apt-get install python-setuptools
 # cd s3cmd-1.5.2
 # python setup.py install
-s3cmd sync --acl-public —skip-existing --no-delete-removed --acl-public --mime-type=text/css styles/ s3://roomhunter-static/styles/
-s3cmd sync --acl-public —skip-existing --no-delete-removed --acl-public --mime-type=application/javascript scripts/ s3://roomhunter-static/scripts/
-s3cmd sync --acl-public —skip-existing --no-delete-removed --acl-public fonts/ s3://roomhunter-static/fonts/
-s3cmd sync --acl-public —skip-existing --no-delete-removed images/ s3://roomhunter-static/images/
+s3cmd sync --acl-public --skip-existing --no-delete-removed --mime-type=text/css styles/ s3://roomhunter-static/styles/
+s3cmd sync --acl-public --skip-existing --no-delete-removed --mime-type=application/javascript scripts/ s3://roomhunter-static/scripts/
+s3cmd sync --acl-public --skip-existing --no-delete-removed fonts/ s3://roomhunter-static/fonts/
+s3cmd sync --acl-public --skip-existing --no-delete-removed images/ s3://roomhunter-static/images/
 
 # configure osscmd first to use
 # set up access id and key to environment variable
