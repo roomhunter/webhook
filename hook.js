@@ -126,6 +126,16 @@ hook.on('push:web-mobile', function (payload) {
     sendConfirmation(payload);
   });
 });
+hook.on('push:mobile-homepage', function (payload) {
+  child_process.execFile('./services/mobile-homepage.sh', function(err, stdout, stderr) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log(stdout);
+    sendConfirmation(payload);
+  });
+});
 
 hook.on('push:server', function (payload) {
   child_process.execFile('./services/deploy-server.sh', function(err, stdout, stderr) {
