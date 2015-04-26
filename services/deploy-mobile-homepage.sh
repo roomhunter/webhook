@@ -14,7 +14,7 @@ svn export --force https://github.com/roomhunter/mobile-homepage/trunk/dist mobi
 
 # upload to CDN
 
-cd homepage
+cd mobile-homepage
 # need to install s3cmd first to use
 # set up access id and key to environment variable
 # apt-get install python-setuptools
