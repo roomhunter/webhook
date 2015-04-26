@@ -127,7 +127,7 @@ hook.on('push:web-mobile', function (payload) {
   });
 });
 hook.on('push:mobile-homepage', function (payload) {
-  child_process.execFile('./services/mobile-homepage.sh', function(err, stdout, stderr) {
+  child_process.execFile('./services/deploy-mobile-homepage.sh', function(err, stdout, stderr) {
     if (err) {
       console.error(err);
       return;
