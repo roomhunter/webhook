@@ -27,10 +27,10 @@ s3cmd sync --acl-public --skip-existing --no-delete-removed --mime-type=text/css
 s3cmd sync --acl-public --skip-existing --no-delete-removed --mime-type=application/javascript scripts/ s3://roomhunter-static/app/scripts/
 s3cmd sync --acl-public --skip-existing --no-delete-removed fonts/ s3://roomhunter-static/app/fonts/
 s3cmd sync --acl-public --skip-existing --no-delete-removed images/ s3://roomhunter-static/app/images/
-s3cmd sync --acl-public --skip-existing --no-delete-removed apartment_components/ s3://roomhunter-static/app/apartment_components/
-s3cmd sync --acl-public --skip-existing --no-delete-removed order_components/ s3://roomhunter-static/app/order_components/
-s3cmd sync --acl-public --skip-existing --no-delete-removed shared_components/ s3://roomhunter-static/app/shared_components/
-s3cmd sync --acl-public --skip-existing --no-delete-removed user_components/ s3://roomhunter-static/app/user_components/
+s3cmd sync --acl-public --skip-existing --no-delete-removed --mime-type=text/html apartment_components/ s3://roomhunter-static/app/apartment_components/
+s3cmd sync --acl-public --skip-existing --no-delete-removed --mime-type=text/html order_components/ s3://roomhunter-static/app/order_components/
+s3cmd sync --acl-public --skip-existing --no-delete-removed --mime-type=text/html shared_components/ s3://roomhunter-static/app/shared_components/
+s3cmd sync --acl-public --skip-existing --no-delete-removed --mime-type=text/html user_components/ s3://roomhunter-static/app/user_components/
 
 # configure osscmd first to use
 # set up access id and key to environment variable
