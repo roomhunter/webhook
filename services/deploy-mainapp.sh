@@ -7,7 +7,9 @@ if [ ! -d /srv/web ]; then
 fi
 
 cd /srv/web
-
+if [ ! -d mainapp ]; then
+    mkdir mainapp
+fi
 # overwrite if exists already
 # svn export --force https://github.com/roomhunter/web-mainapp/trunk/dist mainapp
 
