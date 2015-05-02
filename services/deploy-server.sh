@@ -10,6 +10,5 @@ cd server
 npm install
 
 if ! forever restart index.js ; then
-    export NODE_ENV=development
     forever start -a --uid "server" -o /srv/logs/server/out.log -e /srv/logs/server/err.log index.js
 fi
