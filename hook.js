@@ -180,6 +180,9 @@ hook.on('push:match-recommend', function (payload) {
 hook.on('push:angular-upyun', function (payload) {
     sendHonor(payload);
 });
+hook.on('push:broker', function (payload) {
+  sendHonor(payload);
+});
 hook.on('push:angular-loading-bar', function (payload) {
     sendHonor(payload);
 });
