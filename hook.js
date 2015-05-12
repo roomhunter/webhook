@@ -105,13 +105,13 @@ hook.on('push:web-admin', function (payload) {
 });
 hook.on('push:web-desktop', function (payload) {
   child_process.execFile('./services/deploy-mainapp.sh', function(err, stdout, stderr) {
-    if (err || stderr) {
+    if (err) {
       console.error(err);
       console.error(stderr)
       return;
     }
     else {
-
+      console.error(stderr)
       sendConfirmation(payload);
     }
 
