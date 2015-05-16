@@ -47,9 +47,10 @@ $osscmd uploadfromdir apartment_components oss://roomhunter-static/app/apartment
 $osscmd uploadfromdir order_components oss://roomhunter-static/app/order_components
 $osscmd uploadfromdir shared_components oss://roomhunter-static/app/shared_components
 $osscmd uploadfromdir user_components oss://roomhunter-static/app/user_components
-fi
+
 
 FILES=`find ./fonts -type f -exec basename {} \;`
 for f in $FILES; do
     $osscmd put fonts/$f oss://roomhunter-static/app/fonts/$f --headers="Access-Control-Allow-Origin:*"
 done
+fi
