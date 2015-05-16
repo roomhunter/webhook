@@ -37,8 +37,9 @@ else
 $osscmd uploadfromdir styles oss://roomhunter-static/styles
 $osscmd uploadfromdir scripts oss://roomhunter-static/scripts
 $osscmd uploadfromdir images oss://roomhunter-static/images
-fi
+
 FILES=`find ./fonts -type f -exec basename {} \;`
 for f in $FILES; do
     $osscmd put fonts/$f oss://roomhunter-static/fonts/$f --headers="Access-Control-Allow-Origin:*"
 done
+fi
