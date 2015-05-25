@@ -11,7 +11,7 @@ var hook = require('./github-webhook.js')({
 var mailTemplate = fs.readFileSync('deploy-confirm.html', 'utf-8');
 var mailContent = {
     //Specify email data
-    from: "roomhunter <support@roomhunter.us>",
+    from: "roomhunterCodeTeam <support@roomhunter.us>",
     //The email to contact
     to:'roomhunterteam@googlegroups.com',
     //Subject and text data
