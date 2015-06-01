@@ -11,7 +11,7 @@ var hook = require('./github-webhook.js')({
 var mailTemplate = fs.readFileSync('deploy-confirm.html', 'utf-8');
 var mailContent = {
     //Specify email data
-    from: "roomhunter <support@roomhunter.us>",
+    from: "roomhunterCodeTeam <support@roomhunter.us>",
     //The email to contact
     to:'roomhunterteam@googlegroups.com',
     //Subject and text data
@@ -38,6 +38,7 @@ function sendConfirmation(payload) {
     var confirmMail = mailTemplate.replace('{{NAME}}', realName).replace('{{COMMIT}}', message)
     .replace('{{REPO}}', repo).replace('{{REPO_URL}}', url).replace('{{RESULT}}', 'successfully');
     mailContent.html = confirmMail;
+    if(process.env.server==='ec2')return;
     mailgun.messages().send(mailContent, function (err, body) {
         if (err) {
             console.error(err);
@@ -59,6 +60,7 @@ function sendHonor(payload) {
     var confirmMail = mailTemplate.replace('{{NAME}}', realName).replace('{{COMMIT}}', message)
     .replace('{{REPO}}', repo).replace('{{REPO_URL}}', url).replace('{{RESULT}}', 'ready be');
     mailContent.html = confirmMail;
+    if(process.env.server==='ec2')return;
     mailgun.messages().send(mailContent, function (err, body) {
         if (err) {
             console.error(err);
@@ -149,6 +151,7 @@ hook.on('push:mkt-campaign-1', function (payload) {
   });
 });
 hook.on('push:server', function (payload) {
+  if(process.env.server==='ec2')return;
   child_process.execFile('./services/deploy-server.sh', function(err, stdout, stderr) {
     if (err) {
       console.error(err);

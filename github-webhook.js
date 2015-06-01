@@ -100,10 +100,16 @@ function serverHandler(req, res) {
 
         // invalid json
         if (!data) {
+            if (req.headers['x-github-event'] === 'ping') {
+                return reply(200, res);
+            }
             self.logger.error(Util.format('received invalid data from %s, returning 400', remoteAddress));
             return reply(400, res);
         }
         if (!data.repository || !data.repository.name) {
+            if (req.headers['x-github-event'] === 'ping') {
+                return reply(200, res);
+            }
             self.logger.error(Util.format('received incomplete data from %s, returning 400', remoteAddress));
             return reply(400, res);
         }
