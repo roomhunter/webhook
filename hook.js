@@ -138,7 +138,16 @@ hook.on('push:mobile-homepage', function (payload) {
     sendConfirmation(payload);
   });
 });
-
+hook.on('push:mkt-campaign-1', function (payload) {
+  child_process.execFile('./services/deploy-mkt1.sh', function(err, stdout, stderr) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log(stdout);
+    sendConfirmation(payload);
+  });
+});
 hook.on('push:server', function (payload) {
   child_process.execFile('./services/deploy-server.sh', function(err, stdout, stderr) {
     if (err) {
