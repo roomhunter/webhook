@@ -10,5 +10,5 @@ cd server
 npm install
 
 if ! forever restart index.js ; then
-    forever start -a --uid "server" -o /srv/logs/server/out.log -e /srv/logs/server/err.log index.js
+    forever start -a --uid "server" -l server.log -o /srv/logs/server/out.log -e /srv/logs/server/err.log index.js
 fi
